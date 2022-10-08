@@ -15,24 +15,22 @@ new_variable_name="A"
 
 # Remove empty lines
 empty_line_removal(){
-    sed -i "/^\s*$/d" ${file}   # \n 뿐만아니라 스페이스, Tab도 제거
+    sed -i "/^\s*$/d" "${file}"   # \n 뿐만아니라 스페이스, Tab도 제거
 }
 comment_removal(){
     echo "comment removal"
-    sed -i "/\s*^#\([^!]\|$\)/d" ${file} # '#'으로 시작하는 Comment를 제거, 하지만 Shebang 은 남김
+    sed -i "/^\s*#[^\!]/d" "${file}"  # 공백이 하나 이상 또는 없이 '#'으로 시작하는 Comment를 제거, 
+                                        # 하지만 Shebang 은 남김
 }
 duplicate_whitespaces(){
     echo "duplicate_ws"
-   # sed -i "/[\w]\s{2}"
+   # sed -i "/[\w]\s{2}/ /"
 }
 line_number(){
     echo "line_num"
 }
 change_variable_name(){
-    echo "Variable name to be changed: $variable_name_to_be_changed"
-    echo "New variable name: $new_variable_name"
-    # Check if there is variable
-    # And Verify that the variable name is grammatically correct
+    sed -i "s/\$${variable_name_to_be_changed}/\$${new_variable_name}/g" "${file}"
 }
 arithmathic_expansion(){
     echo "arithmathic_ex"
@@ -160,7 +158,19 @@ do
         clear
         read -p "Variable name to be changed: " variable_name_to_be_changed
         read -p "New variable name: " new_variable_name
-        option_selected[4]="1"
+        
+        # grep 에 quiet option 으로 output 을 suppress
+        grep -q "\$${variable_name_to_be_changed}" "${file}"
+        # 그 후 종료상태 확인으로 해당 변수가 존재하는지 확인
+        exit_status=$?
+        if ! [ $exit_status = 0 ]
+        then
+            echo "Error!!! Variable ${variable_name_to_be_changed} does not exist"
+            option_selected[4]="0"
+        else
+            echo "This works"
+            option_selected[4]="1"
+        fi
     ;;
 
     6)
@@ -205,5 +215,4 @@ do
     ;;
     esac
 done
-
 exit 0
