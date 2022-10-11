@@ -21,19 +21,21 @@ comment_removal(){
     echo "comment removal"
     sed -i "/^\s*#[^\!]/d" "${file}"  # 공백이 하나 이상 또는 없이 '#'으로 시작하는 Comment를 제거, 
                                         # 하지만 Shebang 은 남김
+
 }
 duplicate_whitespaces(){
     echo "duplicate_ws"
-   # sed -i "/[\w]\s{2}/ /"
+    sed -E 's/(\w+)\s+([.]*)/\1\2 /' "${file}"
 }
 line_number(){
     echo "line_num"
 }
 change_variable_name(){
     sed -i "s/\$${variable_name_to_be_changed}/\$${new_variable_name}/g" "${file}"
+    sed -E 's/^" '${variable_name_to_be_changed}' / '${new_variable_name}' /' exc.sh
 }
 arithmathic_expansion(){
-    echo "arithmathic_ex"
+    sed -E 's/(\$\({2}) \$\{(.*)\}(.*[^ ])/\1 \2 \3/' exc.sh > tmpfile; mv tmpfile exc.sh
 }
 
 save(){
