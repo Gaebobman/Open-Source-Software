@@ -37,8 +37,10 @@ line_number(){
     fi    
 }
 change_variable_name(){
-    #sed -i "s/\$${variable_name_to_be_changed}/\$${new_variable_name}/g" "${file}"
-    sed -E 's/^" '${variable_name_to_be_changed}' / '${new_variable_name}' /' "${file}"
+    # sed -E 's/^" '${variable_name_to_be_changed}' / '${new_variable_name}' /' "${file}"
+    #sed -E 's/\$cname/\$new_name/' test1.sh
+    sed -E "s/($variable_name_to_be_changed)=/$new_variable_name=/" "${file}" > tmpfile; mv tmpfile "${file}" # for lvalue
+    sed -i "s/\$$variable_name_to_be_changed/\$$new_variable_name/" "${file}"
 }
 arithmathic_expansion(){
     sed -E 's/(\$\({2}) \$\{(.*)\}(.*[^ ])/\1 \2 \3/' ${file} > tmpfile; mv tmpfile "${file}"
@@ -223,4 +225,5 @@ do
     ;;
     esac
 done
+
 exit 0
