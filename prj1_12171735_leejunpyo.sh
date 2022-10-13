@@ -18,13 +18,10 @@ empty_line_removal(){
     sed -i "/^\s*$/d" "${file}"   # \n 뿐만아니라 스페이스, Tab도 제거
 }
 comment_removal(){
-    # echo "comment removal"
     sed -i "/^\s*#[^\!]/d" "${file}"  # 공백이 하나 이상 또는 없이 '#'으로 시작하는 Comment를 제거, 
                                         # 하지만 Shebang 은 남김
-
 }
 duplicate_whitespaces(){
-    # echo "duplicate_ws"
     sed -E 's/(\w+)\s+([.]*)/\1\2 /' "${file}" > tmpfile; mv tmpfile "${file}"
 }
 line_number(){
@@ -37,13 +34,11 @@ line_number(){
     fi    
 }
 change_variable_name(){
-    # sed -E 's/^" '${variable_name_to_be_changed}' / '${new_variable_name}' /' "${file}"
-    #sed -E 's/\$cname/\$new_name/' test1.sh
     sed -E "s/($variable_name_to_be_changed)=/$new_variable_name=/" "${file}" > tmpfile; mv tmpfile "${file}" # for lvalue
-    sed -i "s/\$$variable_name_to_be_changed/\$$new_variable_name/" "${file}"
+    sed -i "s/\$$variable_name_to_be_changed/\$$new_variable_name/" "${file}" 
 }
 arithmathic_expansion(){
-    sed -E 's/(\$\({2}) \$\{(.*)\}(.*[^ ])/\1 \2 \3/' ${file} > tmpfile; mv tmpfile "${file}"
+    sed -E 's/(\$\({2}) \$\{(.*)\}(.*[^ ])/\1 \2 \3/' "${file}" > tmpfile; mv tmpfile "${file}"
 }
 
 save(){
